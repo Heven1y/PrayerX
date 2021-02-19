@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native'
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      flex: 3,
       justifyContent: 'center',
       alignItems: 'center'
     },
@@ -15,14 +15,13 @@ const styles = StyleSheet.create({
     inputView: {
     },
     input_style: {
-      borderWidth: 2,
-      borderColor: 'grey',
-      borderStyle: 'solid',
-      borderRadius: 15,
-      marginBottom: 10,
       width: 300
     },
     button_style: {
+      flexDirection: 'row',
+    },
+    btn_register: {
+      marginLeft: 30
     }
   });
 
