@@ -2,7 +2,7 @@ import React from 'react'
 export interface IList {
     title: string,
     id: number,
-    cards: ICard['id'][]
+    cardsID: ICard['id'][]
 }
 
 export interface ICard {
@@ -10,7 +10,9 @@ export interface ICard {
     description: string,
     auctor: string,
     id: number,
-    comments: IComment['id'][]
+    subscribed: boolean,
+    done: boolean,
+    commentsID: IComment['id'][]
 }
 
 export interface IComment{
