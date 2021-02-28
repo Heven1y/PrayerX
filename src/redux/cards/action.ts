@@ -35,3 +35,13 @@ export const changeDoneAction = (done: boolean, id:number) => {
         }
     }
 }
+
+export const subscribeCardAction = (subscribe: boolean, id:number) => {
+    return {
+        type: SUBSCRIBE_CARD,
+        payload: {
+            id: id,
+            subscribe: subscribe
+        }
+    }
+}

@@ -16,9 +16,9 @@ type ListProps = {
 export const Column: React.FC<ListProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
     const [title, onChangeTitle] = React.useState('')
-    const openListCard = (title:string) => {
+    const openColumn = (title:string) => {
         console.log(props.list.cardsID)
-        props.navigation.navigate('Cards', { titleColumn: title, cardsID: props.list.cardsID, idColumn: props.list.id})
+        props.navigation.navigate('Column', { titleColumn: title, idColumn: props.list.id})
     }
     const toggleOverlay = () => {
         setVisible(!visible);
@@ -36,7 +36,7 @@ export const Column: React.FC<ListProps> = (props) => {
     return (
         <>
         <ListItem containerStyle={styles.column_style} 
-        onPress={() => openListCard(props.list.title)} onLongPress={toggleOverlay}
+        onPress={() => openColumn(props.list.title)} onLongPress={toggleOverlay}
         style={styles.column_style_onPress}>
         <ListItem.Content>
         <ListItem.Title>{props.list.title}</ListItem.Title>

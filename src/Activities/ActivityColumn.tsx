@@ -7,24 +7,26 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import styles from '../styles'
 import Card from '../Component/Card'
 import {useAppSelector} from '../redux/hooks' 
-type CardsProps = {
+type ColumnProps = {
     route:any,
     navigation:any,
     onChangeDone(done:boolean, id:number):void,
     addCard(title:string, idColumn:number):void
+    removeCard(id:number):void
 }
 
-type CardsPropsRoot = {
+type TasksProps = {
   route:any,
   navigation:any,
   onChangeDone(done:boolean, id:number):void,
-  addCard(title:string, idColumn:number):void
+  addCard(title:string, idColumn:number):void,
+  removeCard(id:number):void
   idActiveColumn: number
 }
 
 const Tab = createMaterialTopTabNavigator();
 
-export const ActivityColumn: React.FC<CardsProps> = (props) => {
+export const ActivityColumn: React.FC<ColumnProps> = (props) => {
     const { titleColumn, idColumn } = props.route.params
     React.useLayoutEffect(() => {
         props.navigation.setOptions({
@@ -50,13 +52,13 @@ export const ActivityColumn: React.FC<CardsProps> = (props) => {
           },
           inactiveTintColor:'#C8C8C8'
         }} >
-          <Tab.Screen name="Prayers" options={{title:'my prayers', }}  >
-            {(propsCard) => <MyPrayers {...propsCard} onChangeDone={props.onChangeDone} 
-            addCard={props.addCard} idActiveColumn={idColumn}/>}
+          <Tab.Screen name="Tasks" options={{title:'my tasks', }}  >
+            {(propsCard) => <MyTasks {...propsCard} onChangeDone={props.onChangeDone} 
+            addCard={props.addCard} idActiveColumn={idColumn} removeCard={props.removeCard}/>}
           </Tab.Screen>
           <Tab.Screen name="Subs" options={{title:'subscribed'}}>
             {(propsCard) => <SubscribedCards {...propsCard} onChangeDone={props.onChangeDone} 
-            addCard={props.addCard}/>}
+            addCard={props.addCard} removeCard={props.removeCard} idActiveColumn={idColumn}/>}
           </Tab.Screen>
         </Tab.Navigator>
       );
@@ -64,7 +66,7 @@ export const ActivityColumn: React.FC<CardsProps> = (props) => {
 
 
 
-const MyPrayers: React.FC<CardsPropsRoot> = (props) => {
+const MyTasks: React.FC<TasksProps> = (props) => {
     const cardsInColumn = useAppSelector((state:any)=>{
       return state.card.cards
     })
@@ -78,6 +80,16 @@ const MyPrayers: React.FC<CardsPropsRoot> = (props) => {
     }
     const addCardNew = () => {
       props.addCard(name, props.idActiveColumn)
+      changeName('')
+    }
+    const buttonDoneTask = () => {
+      if(ArrCardsID.cardsID.length > 0)
+      return (
+        <View style={{marginLeft: '20%', marginTop: 20, marginBottom: 20, marginRight: '20%'}}>
+        <Button title={show ? 'HIDE COMPLETED TASK' : 'SHOW COMPLETED TASK'} titleStyle={{fontSize:14}}
+            buttonStyle={styles.button_sub_and_hide} onPress={visibleCardDone}/>
+        </View>
+      )
     }
     return (
         <ScrollView style={{backgroundColor:'#fff'}}>
@@ -92,24 +104,24 @@ const MyPrayers: React.FC<CardsPropsRoot> = (props) => {
               borderRadius: 10,
               borderColor: '#C8C8C8'
             }}
-            placeholder='Add a prayer...'
+            placeholder='Add a task...'
             value={name} onChangeText={changeName}/>
             {ArrCardsID.cardsID.map((cardID:number) => {
-              if(cardsInColumn.find((card:ICard) => card.id === cardID).done === false)
+              const findCard = cardsInColumn.find((card:ICard) => card.id === cardID)
+              if(!findCard.done)
               return (
               <View key={cardID}>
-              <Card onDeletePress={()=>{}} card={cardsInColumn.find((card:ICard) => card.id === cardID)} onChangeDone={props.onChangeDone}/>
+              <Card onDeletePress={props.removeCard} card={findCard} onChangeDone={props.onChangeDone} navigation={props.navigation}/>
               </View>
               )
             })}
-            <View style={{marginLeft: '20%', marginTop: 20, marginBottom: 20, marginRight: '20%'}}>
-            <Button title={show === true ? 'Hide answered prayers' : 'Show answered prayers'} buttonStyle={styles.button_sub_and_hide} onPress={visibleCardDone}/>
-            </View>
+            {buttonDoneTask()}
             {ArrCardsID.cardsID.map((cardID:number) => {
-              if(cardsInColumn.find((card:ICard) => card.id === cardID).done === true && show === true)
+              const findCard = cardsInColumn.find((card:ICard) => card.id === cardID)
+              if(findCard.done && show)
               return (
               <View key={cardID}>
-              <Card onDeletePress={()=>{}} card={cardsInColumn.find((card:ICard) => card.id === cardID)} onChangeDone={props.onChangeDone}/>
+              <Card onDeletePress={props.removeCard} card={findCard} onChangeDone={props.onChangeDone} navigation={props.navigation}/>
               </View>
               )
             })}
@@ -117,10 +129,47 @@ const MyPrayers: React.FC<CardsPropsRoot> = (props) => {
     )
 }
 
-const SubscribedCards: React.FC<CardsProps> = (props) => {
+const SubscribedCards: React.FC<TasksProps> = (props) => {
+  const cardsInColumn = useAppSelector((state:any)=>{
+    return state.card.cards
+  })
+  const ArrCardsID = useAppSelector((state:any)=> {
+    return state.column.columns.find((column:IList) => column.id === props.idActiveColumn)
+  })
+  const [show, setShow] = React.useState(true)
+  const visibleCardDone = () => {
+    setShow(!show)
+  }
+  const buttonDoneTask = () => {
+    if(cardsInColumn.find((card:ICard) => card.subscribed === true))
+    return (
+      <View style={{marginLeft: '20%', marginTop: 20, marginBottom: 20, marginRight: '20%'}}>
+      <Button title={show ? 'HIDE COMPLETED TASK' : 'SHOW COMPLETED TASK'} titleStyle={{fontSize:14}}
+          buttonStyle={styles.button_sub_and_hide} onPress={visibleCardDone}/>
+      </View>
+    )
+  }
     return (
         <ScrollView style={{backgroundColor: '#fff', flex: 1}}>
-            <Text>Тут карты на которые я подписан видимо</Text>
+            {ArrCardsID.cardsID.map((cardID:number) => {
+              const findCard = cardsInColumn.find((card:ICard) => card.id === cardID)
+              if(!findCard.done && findCard.subscribed)
+              return (
+              <View key={cardID}>
+              <Card onDeletePress={props.removeCard} card={findCard} onChangeDone={props.onChangeDone} navigation={props.navigation}/>
+              </View>
+              )
+            })}
+            {buttonDoneTask()}
+            {ArrCardsID.cardsID.map((cardID:number) => {
+              const findCard = cardsInColumn.find((card:ICard) => card.id === cardID)
+              if(findCard.done && show && findCard.subscribed)
+              return (
+              <View key={cardID}>
+              <Card onDeletePress={props.removeCard} card={findCard} onChangeDone={props.onChangeDone} navigation={props.navigation}/>
+              </View>
+              )
+            })}
         </ScrollView>
     )
 }

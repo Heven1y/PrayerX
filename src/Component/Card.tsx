@@ -6,9 +6,10 @@ import styles from '../styles'
 import Icon from 'react-native-vector-icons/Feather'
 
 type ListItemProps = {
-  onDeletePress():void,
+  onDeletePress(id:number):void,
   onChangeDone(done:boolean, id:number):void
-  card: ICard
+  card: ICard,
+  navigation: any
 }
 
 const Card:React.FC<ListItemProps> = (props) => {
@@ -17,17 +18,23 @@ const Card:React.FC<ListItemProps> = (props) => {
     props.onChangeDone(!check, props.card.id)
     setCheck(props.card.done)
   }
+  const remove = () => {
+    props.onDeletePress(props.card.id)
+  }
+  const openCard = () => {
+    props.navigation.navigate('Card', { idCard: props.card.id})
+  }
   return (
     <ListItem containerStyle={styles.card_style} 
-        onPress={() => {}} onLongPress={() => {}}>
+        onPress={openCard} onLongPress={() => {}}>
         <View style={{ backgroundColor:'#ff0000', width: 3, height: 15, borderStyle: 'solid', borderRadius: 50}}/>
         <ListItem.CheckBox checked={props.card.done} onPress={cheking} size={26}></ListItem.CheckBox>
         <ListItem.Content>
-        <ListItem.Title style={props.card.done === true ? {textDecorationLine: 'line-through'}:{}}>{props.card.title}</ListItem.Title>
+        <ListItem.Title numberOfLines={1} style={props.card.done === true ? {textDecorationLine: 'line-through'}:{}}>{props.card.title}</ListItem.Title>
         </ListItem.Content>
         <Icon name='users' size={24}/>
-        <Text>15</Text>
-        <Icon name='trash' size={24} style={{color: '#ff0000'}}/>
+        <Text>0</Text>
+        <Icon name='trash' size={24} style={{color: '#ff0000'}} onPress={remove}/>
         </ListItem>
   )
 }

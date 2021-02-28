@@ -25,9 +25,6 @@ const styles = StyleSheet.create({
       marginLeft: 30
     },
     header: {
-      position: 'absolute',
-      left: '50%',
-      transform: [{translateY: -15}],
       fontSize: 16
     },
     icon_add: {
@@ -82,6 +79,21 @@ const styles = StyleSheet.create({
       borderStyle: 'solid',
       borderRadius: 50,
       backgroundColor: '#BFB393'
+    },
+    header_card_title: {
+      fontSize: 16,
+      color: '#fff',
+      overflow: 'hidden'
+    },
+    header_card: {
+      backgroundColor: '#BFB393',
+      elevation: 0,
+      shadowOpacity: 0,
+    },
+    icon_edit_card: {
+      position: 'relative',
+      color: '#fff',
+      width: 40
     }
   });
 

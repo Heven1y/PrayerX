@@ -43,6 +43,18 @@ export const cardReducer = (state:any = initialState, action:any) => {
                   return card
             })
         }
+        case SUBSCRIBE_CARD: return {
+            ...state,
+            cards: state.cards.map((card:ICard) => {
+                if(card.id === action.payload.id){
+                    return{
+                      ...card,
+                      subscribed: action.payload.subscribe
+                    }
+                  }
+                  return card
+            })
+        }
         case ADD_COMMENT: return {
             ...state,
             cards: state.cards.map((card:ICard) => {

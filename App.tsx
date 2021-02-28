@@ -7,12 +7,13 @@ import {Column} from './src/Component/Column'
 import {Icon, Input, Overlay, Text} from 'react-native-elements'
 import Feather from 'react-native-vector-icons/Feather'
 import {ActivityColumn} from './src/Activities/ActivityColumn'
+import {ActivityCard} from './src/Activities/ActivityCard'
 import {ICard, IList} from './src/Types/interfaces'
 import { View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {connect, ConnectedProps} from 'react-redux'
 import {addListAction, removeListAction, changeListAction} from './src/redux/columns/action' 
-import { addCardAction, changeCardAction, removeCardAction, changeDoneAction} from './src/redux/cards/action'
+import { addCardAction, changeCardAction, removeCardAction, changeDoneAction, subscribeCardAction} from './src/redux/cards/action'
 import {  addCommentAction, changeCommentAction, removeCommentAction} from './src/redux/comments/action'
 type PropsFromRedux = ConnectedProps<typeof connector>
 
@@ -26,7 +27,8 @@ const mapDispatchToProps = {
   addCommentAction,
   changeCommentAction,
   removeCommentAction,
-  changeDoneAction
+  changeDoneAction,
+  subscribeCardAction
 }
 
 const mapStateToProps = (state:any) => {
@@ -43,6 +45,7 @@ const App:React.FC<PropsFromRedux> = (propsApp) => {
   const [visible, setVisible] = useState(false);
   const [titleDesk, onChangeTitle] = React.useState('')
   const addCard = (title: string, idColumn:number) => {
+    if(title === '') title = 'Task'
     const newCard:ICard = {
       id: Date.now(),
       title: title,
@@ -56,6 +59,13 @@ const App:React.FC<PropsFromRedux> = (propsApp) => {
   }
   const onChangeDone = (done:boolean, id:number) => {
       propsApp.changeDoneAction(done, id)
+  }
+  const removeCard = (id:number) => {
+      console.log('Карта удалена: '+id)
+      propsApp.removeCardAction(id)
+  }
+  const subscribeCard = (subscribe: boolean, id:number) => {
+    propsApp.subscribeCardAction(subscribe, id)
   }
 
 
@@ -97,6 +107,7 @@ const App:React.FC<PropsFromRedux> = (propsApp) => {
                    iconStyle={styles.icon_add}
                  />
                ),
+               headerTitleAlign: 'center'
         }}>
           {(props) => {
             return(
@@ -122,9 +133,12 @@ const App:React.FC<PropsFromRedux> = (propsApp) => {
             </>
             )}}
         </Stack.Screen>
-        <Stack.Screen name="Cards" options={{headerLeft: () => null}}>
-            {(props) => <ActivityColumn {...props} onChangeDone={onChangeDone} addCard={addCard}/>}
-          </Stack.Screen>
+        <Stack.Screen name="Column" options={{headerLeft: () => null, headerTitleAlign: 'center',}}>
+            {(props) => <ActivityColumn {...props} onChangeDone={onChangeDone} addCard={addCard} removeCard={removeCard}/>}
+        </Stack.Screen>
+        <Stack.Screen name="Card">
+            {(props) => <ActivityCard {...props} subscribeCard={subscribeCard}/>}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
