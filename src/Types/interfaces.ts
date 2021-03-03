@@ -1,4 +1,4 @@
-import React from 'react'
+
 export interface IList {
     title: string,
     id: number,
@@ -10,7 +10,6 @@ export interface ICard {
     description: string,
     auctor: string,
     id: number,
-    subscribed: boolean,
     done: boolean,
     commentsID: IComment['id'][]
 }
@@ -19,4 +18,11 @@ export interface IComment{
     comment: string,
     auctor: string,
     id:number
+}
+
+export interface IUser {
+    email: string,
+    name: string,
+    password: string,
+    active: boolean
 }

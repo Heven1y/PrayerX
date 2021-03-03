@@ -4,6 +4,7 @@ import {ListItem, Button} from 'react-native-elements'
 import { ICard } from '../Types/interfaces';
 import styles from '../styles'
 import Icon from 'react-native-vector-icons/Feather'
+import {useAppSelector} from '../redux/hooks'
 
 type ListItemProps = {
   onDeletePress(id:number):void,
@@ -13,6 +14,9 @@ type ListItemProps = {
 }
 
 const Card:React.FC<ListItemProps> = (props) => {
+  const numberCommentsInCard = useAppSelector((state:any)=>{
+    return state.card.cards.find((card:ICard) => card.id === props.card.id).commentsID.length
+  })
   const [check, setCheck] = React.useState(props.card.done)
   const cheking = () => {
     props.onChangeDone(!check, props.card.id)
@@ -27,13 +31,12 @@ const Card:React.FC<ListItemProps> = (props) => {
   return (
     <ListItem containerStyle={styles.card_style} 
         onPress={openCard} onLongPress={() => {}}>
-        <View style={{ backgroundColor:'#ff0000', width: 3, height: 15, borderStyle: 'solid', borderRadius: 50}}/>
         <ListItem.CheckBox checked={props.card.done} onPress={cheking} size={26}></ListItem.CheckBox>
         <ListItem.Content>
         <ListItem.Title numberOfLines={1} style={props.card.done === true ? {textDecorationLine: 'line-through'}:{}}>{props.card.title}</ListItem.Title>
         </ListItem.Content>
-        <Icon name='users' size={24}/>
-        <Text>0</Text>
+        <Icon name='message-square' size={24}/>
+        <Text>{numberCommentsInCard}</Text>
         <Icon name='trash' size={24} style={{color: '#ff0000'}} onPress={remove}/>
         </ListItem>
   )

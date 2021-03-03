@@ -1,6 +1,6 @@
 import React from 'react'
 import { ICard} from '../../Types/interfaces'
-import { ADD_CARD, REMOVE_CARD, CHANGE_CARD, SUBSCRIBE_CARD, DONE_CARD} from './types'
+import { ADD_CARD, REMOVE_CARD, CHANGE_CARD, DONE_CARD} from './types'
 export const addCardAction = (card:ICard, idList:number) => {
     return {
         type: ADD_CARD,
@@ -32,16 +32,6 @@ export const changeDoneAction = (done: boolean, id:number) => {
         payload: {
             id: id,
             done: done
-        }
-    }
-}
-
-export const subscribeCardAction = (subscribe: boolean, id:number) => {
-    return {
-        type: SUBSCRIBE_CARD,
-        payload: {
-            id: id,
-            subscribe: subscribe
         }
     }
 }

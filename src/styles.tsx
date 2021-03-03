@@ -13,10 +13,8 @@ const styles = StyleSheet.create({
       fontSize: 20,
       marginBottom: 20
     },
-    inputView: {
-    },
     input_style: {
-      width: 300
+      width: 300,
     },
     button_style: {
       flexDirection: 'row',
@@ -43,18 +41,19 @@ const styles = StyleSheet.create({
       width: '100%',
       borderStyle: 'solid',
       borderWidth: 1,
-      borderRadius: 15
+      borderRadius: 5
     },
     column_style_onPress: {
       width: '90%',
       marginLeft: '5%',
       marginBottom: 10,
       borderStyle: 'solid',
-      borderRadius: 15
+      borderRadius: 5,
+      tintColor: '#fff'
     },
     icon_check: {
       position: 'relative',
-      color: '#7CFC00',
+      color: '#72A8BC',
       width: 40,
       left: '85%',
       top: '-5%'
@@ -94,7 +93,32 @@ const styles = StyleSheet.create({
       position: 'relative',
       color: '#fff',
       width: 40
-    }
+    },
+    icon_add_comment: {
+      position: 'relative',
+      color: '#BFB393',
+    },
+    style_text_in_card: {
+        fontSize: 16,
+        color: '#BFB393',
+        marginLeft: 20,
+        marginBottom: 10,
+        marginRight: 20,
+        lineHeight: 25
+    },
+    style_View_in_card: {
+      backgroundColor: '#fff',
+      borderStyle: 'solid',
+      borderBottomWidth: 1,
+      borderColor: '#f0f0f0',
+    },
+    style_text_in_card_for_title: {
+      fontSize: 20,
+      color: '#72A8BC',
+      marginLeft: 10,
+      marginTop: 10,
+      marginBottom: 10
+    },
   });
 
 export default styles

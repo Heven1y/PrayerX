@@ -1,6 +1,6 @@
 import React from 'react'
 import { ICard} from '../../Types/interfaces'
-import {ADD_CARD, CHANGE_CARD, REMOVE_CARD, SUBSCRIBE_CARD, DONE_CARD} from './types'
+import {ADD_CARD, CHANGE_CARD, REMOVE_CARD, DONE_CARD} from './types'
 import {ADD_COMMENT, REMOVE_COMMENT} from '../comments/types'
 
 const initialState = { 
@@ -38,18 +38,6 @@ export const cardReducer = (state:any = initialState, action:any) => {
                     return{
                       ...card,
                       done: action.payload.done
-                    }
-                  }
-                  return card
-            })
-        }
-        case SUBSCRIBE_CARD: return {
-            ...state,
-            cards: state.cards.map((card:ICard) => {
-                if(card.id === action.payload.id){
-                    return{
-                      ...card,
-                      subscribed: action.payload.subscribe
                     }
                   }
                   return card

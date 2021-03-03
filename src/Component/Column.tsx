@@ -1,8 +1,7 @@
 import React from 'react'
-import { View, Text, ScrollView, TextInput } from 'react-native';
-import {Input, Button, Icon, ListItem, Overlay} from 'react-native-elements'
+import { View, Text} from 'react-native';
+import {Input, Button, ListItem, Overlay} from 'react-native-elements'
 import Feather from 'react-native-vector-icons/Feather'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import styles from '../styles'
 import {IList} from '../Types/interfaces'
 type ListProps = {
@@ -46,8 +45,10 @@ export const Column: React.FC<ListProps> = (props) => {
         <View>
         <Text style={{marginLeft:10, fontSize: 20, marginBottom: 10, marginTop: 10}}>Change column</Text>
         <Input value={title} onChangeText={onChangeTitle} placeholder='Name column' containerStyle={styles.input_style}/>
-        <Feather onPress={() => Change(props.list.id, title)} name="check" size={30} style={styles.icon_check}/>
-        <EvilIcons onPress={() => Delete(props.list.id)} name='trash' size={32} style={styles.icon_trash}/>
+        <Button onPress={() => Change(props.list.id, title)} icon={<Feather name="check" size={30} style={{ color: '#72A8BC',}}/>} 
+          buttonStyle={{backgroundColor: '#f0f0ff', borderRadius: 30}}/>
+          <Button onPress={() => Delete(props.list.id)} icon={<Feather name='trash' size={25} style={{color: '#FF0000',}}/>} 
+          buttonStyle={{marginTop:10, backgroundColor: '#fff0f0', borderRadius: 30}}/>
         </View>
         </Overlay>
         </>
