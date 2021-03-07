@@ -1,13 +1,16 @@
 import React from 'react'
-import { View, Text, ScrollView, ToastAndroid } from 'react-native';
+import { View, Text, ScrollView, ToastAndroid } from 'react-native'
+import {resetStoreAction} from '../redux/storeAction'
 import {Input, Button, Icon, Overlay} from 'react-native-elements'
-import {IList} from '../Types/interfaces'
+import {IList, IUser} from '../Types/interfaces'
 import Feather from 'react-native-vector-icons/Feather'
 import styles from '../styles'
 import {useAppDispatch, useAppSelector} from '../redux/hooks'
 import {addListAction, changeListAction, removeListAction} from '../redux/columns/action'
 import {setActiveUserAction} from '../redux/users/action'
 import {Column} from '../Component/Column'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import columnsApi from '../API/Columns'
 
 type DeskProps = {
     route:any,
@@ -20,6 +23,9 @@ export const ActivityDesk:React.FC<DeskProps> = (props) => {
     const Columns = useAppSelector((state:any)=>{
         return state.column.columns
       })
+    const activeUser = useAppSelector((state:any) => {
+      return state.user.user
+    })
     const dispatch = useAppDispatch()
     React.useLayoutEffect(() => {
         props.navigation.setOptions({
@@ -42,26 +48,44 @@ export const ActivityDesk:React.FC<DeskProps> = (props) => {
                headerTitleAlign: 'center'
         });
       }, [props.navigation]);
-    const addColumn = (title:string) => {
+    const addColumn = async (title:string) => {
         if(title === '') title = 'Column'
+        const newColumnApi = {
+          title: title,
+          description: ''
+        }
+        const answer:any = await columnsApi.createColumns(activeUser.token, newColumnApi)
         const newColumn:IList = {
-            id: Date.now(),
-            title: title,
-            cardsID: []
+          id: answer.id,
+          title: title
         }
         dispatch(addListAction(newColumn))
+        console.log(answer)
         setVisible(!visible)
         onChangeTitle('')
     }
-    const logOut = () => {
-      dispatch(setActiveUserAction(false))
+    const logOut = async () => {
+      const remUser:IUser = {
+        active: false,
+        token: '',
+        name: ''
+      }
+      await AsyncStorage.setItem('activeUser', JSON.stringify(remUser))
+      dispatch(setActiveUserAction(remUser))
+      dispatch(resetStoreAction())
     }
     const changeColumn = (id:number, title:string) => {
       if(title === '') title = 'Column'
       dispatch(changeListAction(id, title))
+      const newColumnApi = {
+        title: title,
+        description: ''
+      }
+      columnsApi.changeColumns(activeUser.token, id, newColumnApi)
     }
     const removeColumn = (id:number) => {
         dispatch(removeListAction(id))
+        columnsApi.removeColumns(activeUser.token, id)
     }
 
     const toggleOverlay = () => {

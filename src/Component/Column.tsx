@@ -3,7 +3,10 @@ import { View, Text} from 'react-native';
 import {Input, Button, ListItem, Overlay} from 'react-native-elements'
 import Feather from 'react-native-vector-icons/Feather'
 import styles from '../styles'
-import {IList} from '../Types/interfaces'
+import {ICard, IList} from '../Types/interfaces'
+import cardsApi from '../API/Cards'
+import {useAppDispatch, useAppSelector} from '../redux/hooks'
+import { loadCardAction } from '../redux/cards/action';
 type ListProps = {
     route:any,
     navigation:any,
@@ -15,9 +18,12 @@ type ListProps = {
 export const Column: React.FC<ListProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
     const [title, onChangeTitle] = React.useState('')
-    const openColumn = (title:string) => {
-        console.log(props.list.cardsID)
+    const activeUser = useAppSelector((state:any) => state.user.user.token)
+    const dispatch = useAppDispatch()
+    const openColumn = async (title:string) => {
+        const cardsFromAPI = await cardsApi.getCards(activeUser)
         props.navigation.navigate('Column', { titleColumn: title, idColumn: props.list.id})
+        dispatch(loadCardAction(cardsFromAPI.filter((card:ICard) => card.columnId === props.list.id)))
     }
     const toggleOverlay = () => {
         setVisible(!visible);

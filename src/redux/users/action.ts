@@ -1,20 +1,10 @@
 import React from 'react'
 import { IUser} from '../../Types/interfaces'
-import { REG_USER, ACTIVE_USER } from './types'
+import { ACTIVE_USER } from './types'
 
-export const regUserAction = (user:IUser) => {
-    return {
-        type: REG_USER,
-        payload: {
-            newUser: user
-        }
-    }
-}
-export const setActiveUserAction = (active:boolean) => {
+export const setActiveUserAction = (user:IUser) => {
     return {
         type: ACTIVE_USER,
-        payload: {
-            active: active
-        }
+        payload: user
     }
 }

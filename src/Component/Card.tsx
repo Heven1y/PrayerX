@@ -4,39 +4,45 @@ import {ListItem, Button} from 'react-native-elements'
 import { ICard } from '../Types/interfaces';
 import styles from '../styles'
 import Icon from 'react-native-vector-icons/Feather'
-import {useAppSelector} from '../redux/hooks'
+import commentApi from '../API/Comments'
+import {useAppDispatch, useAppSelector} from '../redux/hooks'
+import { loadCommentAction } from '../redux/comments/action';
 
 type ListItemProps = {
   onDeletePress(id:number):void,
-  onChangeDone(done:boolean, id:number):void
+  onChangeDone(id:number, title: string, descript: string, done:boolean):void
   card: ICard,
   navigation: any
 }
 
 const Card:React.FC<ListItemProps> = (props) => {
-  const numberCommentsInCard = useAppSelector((state:any)=>{
-    return state.card.cards.find((card:ICard) => card.id === props.card.id).commentsID.length
+  const [check, setCheck] = React.useState(props.card.checked)
+  const activeUser = useAppSelector((state:any) => {
+    return state.user.user
   })
-  const [check, setCheck] = React.useState(props.card.done)
+  const dispatch = useAppDispatch()
   const cheking = () => {
-    props.onChangeDone(!check, props.card.id)
-    setCheck(props.card.done)
+    props.onChangeDone(props.card.id, props.card.title, props.card.description, !check)
+    setCheck(props.card.checked)
   }
   const remove = () => {
     props.onDeletePress(props.card.id)
   }
-  const openCard = () => {
+  const openCard = async () => {
+    const commentsFromAPI = await commentApi.getComment(activeUser.token)
+    console.log(commentsFromAPI)
+    dispatch(loadCommentAction(commentsFromAPI))
     props.navigation.navigate('Card', { idCard: props.card.id})
   }
   return (
     <ListItem containerStyle={styles.card_style} 
         onPress={openCard} onLongPress={() => {}}>
-        <ListItem.CheckBox checked={props.card.done} onPress={cheking} size={26}></ListItem.CheckBox>
+        <ListItem.CheckBox checked={props.card.checked} onPress={cheking} size={26}></ListItem.CheckBox>
         <ListItem.Content>
-        <ListItem.Title numberOfLines={1} style={props.card.done === true ? {textDecorationLine: 'line-through'}:{}}>{props.card.title}</ListItem.Title>
+        <ListItem.Title numberOfLines={1} style={props.card.checked === true ? {textDecorationLine: 'line-through'}:{}}>{props.card.title}</ListItem.Title>
         </ListItem.Content>
         <Icon name='message-square' size={24}/>
-        <Text>{numberCommentsInCard}</Text>
+        <Text>{props.card.commentsIds.length}</Text>
         <Icon name='trash' size={24} style={{color: '#ff0000'}} onPress={remove}/>
         </ListItem>
   )

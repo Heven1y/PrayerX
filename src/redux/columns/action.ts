@@ -1,6 +1,6 @@
 import React from 'react'
 import { IList } from '../../Types/interfaces'
-import { ADD_COLUMN, CHANGE_COLUMN, REMOVE_COLUMN } from './types'
+import { ADD_COLUMN, CHANGE_COLUMN, LOAD_COLUMN, REMOVE_COLUMN } from './types'
 export const addListAction = (list:IList) => {
     return {
         type: ADD_COLUMN,
@@ -20,5 +20,11 @@ export const changeListAction = (id: number, title: string) => {
             id: id,
             title: title
         }
+    }
+}
+export const loadListAction = (list:IList[]) => {
+    return {
+        type: LOAD_COLUMN,
+        payload: list
     }
 }

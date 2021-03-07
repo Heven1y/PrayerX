@@ -1,28 +1,25 @@
 
 export interface IList {
     title: string,
-    id: number,
-    cardsID: ICard['id'][]
+    id: number
 }
 
 export interface ICard {
+    columnId: number,
     title: string,
     description: string,
-    auctor: string,
     id: number,
-    done: boolean,
-    commentsID: IComment['id'][]
+    checked: boolean,
+    commentsIds: IComment['id'][]
 }
 
 export interface IComment{
-    comment: string,
-    auctor: string,
+    body: string,
     id:number
 }
 
 export interface IUser {
-    email: string,
+    token: string,
     name: string,
-    password: string,
     active: boolean
 }

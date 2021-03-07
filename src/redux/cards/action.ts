@@ -1,13 +1,10 @@
 import React from 'react'
 import { ICard} from '../../Types/interfaces'
-import { ADD_CARD, REMOVE_CARD, CHANGE_CARD, DONE_CARD} from './types'
-export const addCardAction = (card:ICard, idList:number) => {
+import { ADD_CARD, REMOVE_CARD, CHANGE_CARD, LOAD_CARD} from './types'
+export const addCardAction = (card:ICard) => {
     return {
         type: ADD_CARD,
-        payload: {
-            card: card,
-            idList: idList
-        }
+        payload: card
     }
 }
 export const removeCardAction = (id :number) => {
@@ -16,22 +13,21 @@ export const removeCardAction = (id :number) => {
         payload: id
     }
 }
-export const changeCardAction = (id:number, title:string, description:string) => {
+export const changeCardAction = (id:number, title:string, description:string, checked:boolean) => {
     return {
         type: CHANGE_CARD,
         payload: {
             id: id,
             title: title,
-            description: description
+            description: description,
+            checked: checked
         }
     }
 }
-export const changeDoneAction = (done: boolean, id:number) => {
+
+export const loadCardAction = (cards:ICard[]) => {
     return {
-        type: DONE_CARD,
-        payload: {
-            id: id,
-            done: done
-        }
+        type: LOAD_CARD,
+        payload: cards
     }
 }

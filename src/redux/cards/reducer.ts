@@ -1,6 +1,6 @@
 import React from 'react'
 import { ICard} from '../../Types/interfaces'
-import {ADD_CARD, CHANGE_CARD, REMOVE_CARD, DONE_CARD} from './types'
+import {ADD_CARD, CHANGE_CARD, REMOVE_CARD, DONE_CARD, LOAD_CARD} from './types'
 import {ADD_COMMENT, REMOVE_COMMENT} from '../comments/types'
 
 const initialState = { 
@@ -10,7 +10,11 @@ export const cardReducer = (state:any = initialState, action:any) => {
     switch (action.type){
         case ADD_CARD: return {
             ...state,
-            cards: [action.payload.card, ...state.cards]
+            cards: [action.payload, ...state.cards]
+        }
+        case LOAD_CARD: return {
+            ...state,
+            cards: action.payload
         }
         case REMOVE_CARD: return {
             ...state,
@@ -25,22 +29,11 @@ export const cardReducer = (state:any = initialState, action:any) => {
                     return {
                         ...card,
                         title: action.payload.title,
-                        description: action.payload.description
+                        description: action.payload.description,
+                        checked: action.payload.checked
                     }
                 }
                 return card
-            })
-        }
-        case DONE_CARD: return {
-            ...state,
-            cards: state.cards.map((card:ICard) => {
-                if(card.id === action.payload.id){
-                    return{
-                      ...card,
-                      done: action.payload.done
-                    }
-                  }
-                  return card
             })
         }
         case ADD_COMMENT: return {
@@ -49,7 +42,7 @@ export const cardReducer = (state:any = initialState, action:any) => {
                 if(card.id === action.payload.idCard){
                     return {
                         ...card,
-                        commentsID: [action.payload.comment.id, ...card.commentsID]
+                        commentsIds: [action.payload.comment.id, ...card.commentsIds]
                     }
                 }
                 return card
@@ -60,8 +53,8 @@ export const cardReducer = (state:any = initialState, action:any) => {
             cards: state.cards.map((card:ICard) => {
                 return {
                     ...card,
-                    commentsID: card.commentsID.filter(card => {
-                        return card !== action.payload
+                    commentsIds: card.commentsIds.filter(id => {
+                        return id !== action.payload
                     })
                 }
             })

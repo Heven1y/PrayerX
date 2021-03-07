@@ -8,6 +8,8 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks'
 import Comment from '../Component/Comment'
 import {addCommentAction, changeCommentAction, removeCommentAction} from '../redux/comments/action'
 import {changeCardAction} from '../redux/cards/action'
+import commentApi from '../API/Comments'
+import cardsApi from '../API/Cards'
 
 type CardProps = {
     route:any,
@@ -26,6 +28,9 @@ export const ActivityCard:React.FC<CardProps> = (props) => {
     const commentsInCard = useAppSelector((state:any) => {
        return state.comment.comments
     })
+    const activeUser = useAppSelector((state:any) => {
+      return state.user.user
+   })
     const [title, setTitle] = React.useState(activeCard.title)
     const [descript, setDescript] = React.useState(activeCard.description)
     const dispatch = useAppDispatch()
@@ -46,19 +51,21 @@ export const ActivityCard:React.FC<CardProps> = (props) => {
             
         });
       }, [props.navigation, activeCard.title]);
-    const addComment = () => {
+    const addComment = async () => {
+      const result:any = await commentApi.createComment(activeUser.token, idCard, {body: valueInput})
       const newComment:IComment = {
-        id: Date.now(),
-        auctor: 'Administrator',
-        comment: valueInput
+        id: result.id,
+        body: valueInput
       }
       dispatch(addCommentAction(idCard, newComment))
       ToastAndroid.show("Comment added!", ToastAndroid.SHORT);
       setValue('')
       Keyboard.dismiss()
     }
-    const changeCard = () => {
-      dispatch(changeCardAction(idCard, title, descript))
+    const changeCard = async () => {
+      dispatch(changeCardAction(idCard, title, descript, activeCard.checked))
+      const result = await cardsApi.changeCard(activeUser.token, idCard, {title: title, description: descript, checked: activeCard.checked})
+      console.log(result)
       setVisible(!visible)
     }
     const prevChange = (id:number, comment:string) => {
@@ -68,6 +75,7 @@ export const ActivityCard:React.FC<CardProps> = (props) => {
       ToastAndroid.show("You are currently editing a comment", ToastAndroid.SHORT);
     }
     const changeComment = () => {
+      commentApi.changeComment(activeUser.token, idComment, {body: valueInput})
       dispatch(changeCommentAction(idComment, valueInput))
       ToastAndroid.show("Comment changed!", ToastAndroid.SHORT);
       setID(0)
@@ -75,6 +83,7 @@ export const ActivityCard:React.FC<CardProps> = (props) => {
       Keyboard.dismiss()
     }
     const removeComment = (id:number) => {
+      commentApi.removeComment(activeUser.token, id)
       dispatch(removeCommentAction(id))
     }
     const toggleOverlay = () => {
@@ -95,7 +104,7 @@ export const ActivityCard:React.FC<CardProps> = (props) => {
         </View>
         <View style={{backgroundColor:'#fff'}}><Text style={styles.style_text_in_card_for_title}>Comments</Text></View>
         <ScrollView style={{backgroundColor:'#fff'}}>
-          {activeCard.commentsID.map((commentID:number)=> {
+          {activeCard.commentsIds.map((commentID:number)=> {
             const findComment = commentsInCard.find((comment:IComment) => comment.id === commentID)
             return (
               <View key={commentID}>

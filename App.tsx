@@ -1,22 +1,44 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import {SignIn, SignUp} from './src/Activities/ActivitiesAuthorization'
-import {ActivityColumn} from './src/Activities/ActivityColumn'
-import {ActivityCard} from './src/Activities/ActivityCard'
-import {ActivityDesk} from './src/Activities/ActivityDesk'
-import {useAppSelector} from './src/redux/hooks'
-
+import {SignIn, SignUp} from './src/Screens/ScreensAuthorization'
+import {ActivityColumn} from './src/Screens/ScreenColumn'
+import {ActivityCard} from './src/Screens/ScreenCard'
+import {ActivityDesk} from './src/Screens/ScreenDesk'
+import {useAppSelector, useAppDispatch} from './src/redux/hooks'
+import { IList, IUser } from './src/Types/interfaces';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import {setActiveUserAction} from './src/redux/users/action'
+import columns from './src/API/Columns'
+import { addListAction, loadListAction } from './src/redux/columns/action';
+import {resetStoreAction} from './src/redux/storeAction'
 const Stack = createStackNavigator();
 
 const App:React.FC = () => { 
-  const activeUser = useAppSelector((state:any)=>{
-    return state.user.user.active
+  const activeUser:IUser = useAppSelector((state:any)=>{
+    return state.user.user
   })
+  const dispatch = useAppDispatch()
+  const [load, setLoad] = React.useState(false)
+  React.useEffect(() => {
+    async function getActiveFromStore() {
+      if(!load) {
+        const user = await JSON.parse(await AsyncStorage.getItem('activeUser') || '{}') as IUser
+        console.log(user.active)
+        if(user.active){
+          dispatch(setActiveUserAction(user))
+          const colResult = await columns.getColumns(user.token)
+          dispatch(loadListAction(colResult))
+        }
+        setLoad(true)
+      }
+    }
+    getActiveFromStore()
+  }, [load])
   return (
     <NavigationContainer>
       {
-        activeUser ? (
+        activeUser.active ? (
           <Stack.Navigator initialRouteName={"Desk"}>
               <Stack.Screen name="Desk"  component={ActivityDesk}/>
               <Stack.Screen name="Column" component={ActivityColumn}/>
