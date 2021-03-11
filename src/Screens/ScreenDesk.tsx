@@ -11,6 +11,7 @@ import {setActiveUserAction} from '../redux/users/action'
 import {Column} from '../Component/Column'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import columnsApi from '../API/Columns'
+import { addColumnInApi } from '../Saga/sagaActions'
 
 type DeskProps = {
     route:any,
@@ -50,17 +51,7 @@ export const ActivityDesk:React.FC<DeskProps> = (props) => {
       }, [props.navigation]);
     const addColumn = async (title:string) => {
         if(title === '') title = 'Column'
-        const newColumnApi = {
-          title: title,
-          description: ''
-        }
-        const answer:any = await columnsApi.createColumns(activeUser.token, newColumnApi)
-        const newColumn:IList = {
-          id: answer.id,
-          title: title
-        }
-        dispatch(addListAction(newColumn))
-        console.log(answer)
+        dispatch(addColumnInApi(activeUser.token, title))
         setVisible(!visible)
         onChangeTitle('')
     }

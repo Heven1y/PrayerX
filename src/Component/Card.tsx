@@ -1,6 +1,6 @@
 import React from 'react'
-import { Text, TouchableOpacity, View, Image, LayoutAnimation, SafeAreaView, StyleSheet } from 'react-native'
-import {ListItem, Button} from 'react-native-elements'
+import { Text } from 'react-native'
+import {ListItem} from 'react-native-elements'
 import { ICard } from '../Types/interfaces';
 import styles from '../styles'
 import Icon from 'react-native-vector-icons/Feather'
@@ -30,7 +30,6 @@ const Card:React.FC<ListItemProps> = (props) => {
   }
   const openCard = async () => {
     const commentsFromAPI = await commentApi.getComment(activeUser.token)
-    console.log(commentsFromAPI)
     dispatch(loadCommentAction(commentsFromAPI))
     props.navigation.navigate('Card', { idCard: props.card.id})
   }

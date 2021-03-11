@@ -6,12 +6,11 @@ import {ActivityColumn} from './src/Screens/ScreenColumn'
 import {ActivityCard} from './src/Screens/ScreenCard'
 import {ActivityDesk} from './src/Screens/ScreenDesk'
 import {useAppSelector, useAppDispatch} from './src/redux/hooks'
-import { IList, IUser } from './src/Types/interfaces';
+import { IUser } from './src/Types/interfaces';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {setActiveUserAction} from './src/redux/users/action'
 import columns from './src/API/Columns'
-import { addListAction, loadListAction } from './src/redux/columns/action';
-import {resetStoreAction} from './src/redux/storeAction'
+import { loadListAction } from './src/redux/columns/action';
 const Stack = createStackNavigator();
 
 const App:React.FC = () => { 
@@ -27,8 +26,6 @@ const App:React.FC = () => {
         console.log(user.active)
         if(user.active){
           dispatch(setActiveUserAction(user))
-          const colResult = await columns.getColumns(user.token)
-          dispatch(loadListAction(colResult))
         }
         setLoad(true)
       }

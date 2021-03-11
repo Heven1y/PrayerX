@@ -7,6 +7,7 @@ import {ICard, IList} from '../Types/interfaces'
 import cardsApi from '../API/Cards'
 import {useAppDispatch, useAppSelector} from '../redux/hooks'
 import { loadCardAction } from '../redux/cards/action';
+import { loadCardsFromApi } from '../Saga/sagaActions';
 type ListProps = {
     route:any,
     navigation:any,
@@ -21,9 +22,8 @@ export const Column: React.FC<ListProps> = (props) => {
     const activeUser = useAppSelector((state:any) => state.user.user.token)
     const dispatch = useAppDispatch()
     const openColumn = async (title:string) => {
-        const cardsFromAPI = await cardsApi.getCards(activeUser)
+        dispatch(loadCardsFromApi(activeUser, props.list.id))
         props.navigation.navigate('Column', { titleColumn: title, idColumn: props.list.id})
-        dispatch(loadCardAction(cardsFromAPI.filter((card:ICard) => card.columnId === props.list.id)))
     }
     const toggleOverlay = () => {
         setVisible(!visible);

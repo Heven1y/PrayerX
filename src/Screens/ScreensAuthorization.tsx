@@ -30,8 +30,6 @@ export const SignIn: React.FC<LoginProps> = (props) => {
         const result = await auth.signIn(userParametrs)
         console.log(result)
         if(result.name !== 'EntityNotFound'){
-            const colResult = await columns.getColumns(result.token)
-            dispatch(loadListAction(colResult))
             const newUser:IUser = {
             active: true,
             token: result.token,
