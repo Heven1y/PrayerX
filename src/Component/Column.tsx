@@ -3,11 +3,9 @@ import { View, Text} from 'react-native';
 import {Input, Button, ListItem, Overlay} from 'react-native-elements'
 import Feather from 'react-native-vector-icons/Feather'
 import styles from '../styles'
-import {ICard, IList} from '../Types/interfaces'
-import cardsApi from '../API/Cards'
+import {IList} from '../Types/interfaces'
 import {useAppDispatch, useAppSelector} from '../redux/hooks'
 import { loadCardAction } from '../redux/cards/action';
-import { loadCardsFromApi } from '../Saga/sagaActions';
 type ListProps = {
     route:any,
     navigation:any,
@@ -22,7 +20,7 @@ export const Column: React.FC<ListProps> = (props) => {
     const activeUser = useAppSelector((state:any) => state.user.user.token)
     const dispatch = useAppDispatch()
     const openColumn = async (title:string) => {
-        dispatch(loadCardsFromApi(activeUser, props.list.id))
+        dispatch(loadCardAction([]))
         props.navigation.navigate('Column', { titleColumn: title, idColumn: props.list.id})
     }
     const toggleOverlay = () => {

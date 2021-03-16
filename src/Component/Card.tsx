@@ -17,9 +17,6 @@ type ListItemProps = {
 
 const Card:React.FC<ListItemProps> = (props) => {
   const [check, setCheck] = React.useState(props.card.checked)
-  const activeUser = useAppSelector((state:any) => {
-    return state.user.user
-  })
   const dispatch = useAppDispatch()
   const cheking = () => {
     props.onChangeDone(props.card.id, props.card.title, props.card.description, !check)
@@ -29,9 +26,8 @@ const Card:React.FC<ListItemProps> = (props) => {
     props.onDeletePress(props.card.id)
   }
   const openCard = async () => {
-    const commentsFromAPI = await commentApi.getComment(activeUser.token)
-    dispatch(loadCommentAction(commentsFromAPI))
     props.navigation.navigate('Card', { idCard: props.card.id})
+    dispatch(loadCommentAction([]))
   }
   return (
     <ListItem containerStyle={styles.card_style} 

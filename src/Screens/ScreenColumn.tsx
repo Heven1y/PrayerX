@@ -6,9 +6,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import styles from '../styles'
 import Card from '../Component/Card'
 import {useAppSelector, useAppDispatch} from '../redux/hooks' 
-import { removeCardAction, changeCardAction} from '../redux/cards/action'
+import { removeCardAction, changeCardAction, addCardAction} from '../redux/cards/action'
 import cardsApi from '../API/Cards'
-import { addCardInApi } from '../Saga/sagaActions';
 type ColumnProps = {
     route:any,
     navigation:any
@@ -36,12 +35,15 @@ export const ActivityColumn: React.FC<ColumnProps> = (props) => {
     }
     const addCard = async (title: string, idColumn:number) => {
       if(title === '') title = 'Task'
-      dispatch(addCardInApi(activeUser.token, {
-        title: title, 
-        description: 'To change the description of the card click on the button in the upper right corner of the screen', 
+      const newCard:ICard = {
+        id: Date.now(),
+        columnId: idColumn,
+        title: title,
+        description: 'To change the description of the card click on the button in the upper right corner of the screen',
         checked: false,
-        column: {id:idColumn}
-      }))
+        commentsIds: []
+      }
+      dispatch(addCardAction(newCard))
     }
     const removeCard = (id:number) => {
       dispatch(removeCardAction(id))
@@ -81,7 +83,7 @@ export const ActivityColumn: React.FC<ColumnProps> = (props) => {
 
 const MyTasks: React.FC<TasksProps> = (props) => {
     const [name, changeName] = React.useState('')
-    const cards = useAppSelector((state:any)=> state.card.cards)
+    const cards = useAppSelector((state:any)=> state.card.cards.filter((card:ICard) => card.columnId === props.idActiveColumn))
     const addCardNew = () => {
       props.addCard(name, props.idActiveColumn)
       changeName('')

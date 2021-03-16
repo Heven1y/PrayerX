@@ -10,7 +10,6 @@ import {addCommentAction, changeCommentAction, removeCommentAction} from '../red
 import {changeCardAction} from '../redux/cards/action'
 import commentApi from '../API/Comments'
 import cardsApi from '../API/Cards'
-import { addCommentInApi } from '../Saga/sagaActions';
 
 type CardProps = {
     route:any,
@@ -52,13 +51,17 @@ export const ActivityCard:React.FC<CardProps> = (props) => {
             
         });
       }, [props.navigation, activeCard.title]);
-    const addComment = async () => {
-      dispatch(addCommentInApi(activeUser.token, idCard, valueInput))
+    const addComment = () => {
+      const newComment:IComment = {
+        id: Date.now(),
+        body: valueInput
+      }
+      dispatch(addCommentAction(idCard, newComment))
       ToastAndroid.show("Comment added!", ToastAndroid.SHORT);
       setValue('')
       Keyboard.dismiss()
     }
-    const changeCard = async () => {
+    const changeCard = () => {
       dispatch(changeCardAction(idCard, title, descript, activeCard.checked))
       cardsApi.changeCard(activeUser.token, idCard, {title: title, description: descript, checked: activeCard.checked})
       setVisible(!visible)

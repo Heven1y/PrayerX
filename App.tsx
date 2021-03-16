@@ -9,8 +9,6 @@ import {useAppSelector, useAppDispatch} from './src/redux/hooks'
 import { IUser } from './src/Types/interfaces';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {setActiveUserAction} from './src/redux/users/action'
-import columns from './src/API/Columns'
-import { loadListAction } from './src/redux/columns/action';
 const Stack = createStackNavigator();
 
 const App:React.FC = () => { 
